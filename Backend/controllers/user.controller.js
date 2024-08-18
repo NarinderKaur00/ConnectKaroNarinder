@@ -62,10 +62,10 @@ export const login = async (req, res) => {
                 success: false,
             });
         };
-
+// in browser go to inspect them application then cookies
         //ab jab sab ho chuka so create a token and is stored in cookies 
-        // so what is token is ki agar toh cookie me token hota h toh means k iuser site pr h aur agar token nahi hota cookies me toh iska matlab user ne logout kr diya ab vo site pr nahi h
-        const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+        // so what is token is ki agar toh cookie me token hota h toh means k iuser site pr h login h aur agar token nahi hota cookies me toh iska matlab user ne logout kr diya ab vo site pr nahi h
+        const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' }); // 1d means 24 hours
 
         // populate each post if in the posts array
         const populatedPosts = await Promise.all(
@@ -77,7 +77,7 @@ export const login = async (req, res) => {
                 return null;
             })
         )
-        user = {
+        user = { //make a object, don't show password
             _id: user._id,
             username: user.username,
             email: user.email,
@@ -99,7 +99,7 @@ export const login = async (req, res) => {
 };
 export const logout = async (_, res) => {
     try {
-        return res.cookie("token", "", { maxAge: 0 }).json({
+        return res.cookie("token", "", { maxAge: 0 }).json({ // cookie ke ander ka token delete krdo
             message: 'Logged out successfully.',
             success: true
         });
@@ -120,14 +120,14 @@ export const getProfile = async (req, res) => {
     }
 };
 
-export const editProfile = async (req, res) => {
+export const editProfile = async (req, res) => { //sirf apni profile ko hi edit kr sakte ho ye nahi ki kisi ki bhi krlo, so now how to know ki kis id ko kr sakte h, so now we see the user id present in token
     try {
         const userId = req.id;
         const { bio, gender } = req.body;
-        const profilePicture = req.file;
+        const profilePicture = req.file; //to get file picture
         let cloudResponse;
 
-        if (profilePicture) {
+        if (profilePicture) {//agar profile picture hogi tabhi ye krna
             const fileUri = getDataUri(profilePicture);
             cloudResponse = await cloudinary.uploader.upload(fileUri);
         }
