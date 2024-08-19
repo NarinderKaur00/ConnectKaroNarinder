@@ -29,13 +29,13 @@ export const addNewPost = async (req, res) => {
             image: cloudResponse.secure_url,
             author: authorId
         });
-        const user = await User.findById(authorId);
+        const user = await User.findById(authorId); //jise hi post create karega user vase hi oski id me post add hoti jayengi
         if (user) {
             user.posts.push(post._id);
             await user.save();
         }
 
-        await post.populate({ path: 'author', select: '-password' });
+        await post.populate({ path: 'author', select: '-password' }); //populate means ki kisi ki bhi id se aap oska pura data nikal sakte ho
 
         return res.status(201).json({
             message: 'New post added',
@@ -47,14 +47,14 @@ export const addNewPost = async (req, res) => {
         console.log(error);
     }
 }
-export const getAllPost = async (req, res) => {
+export const getAllPost = async (req, res) => { //isme hum apni  feed me post ko show kr rahe h
     try {
-        const posts = await Post.find().sort({ createdAt: -1 })
+        const posts = await Post.find().sort({ createdAt: -1 }) //jo sabse lated post create hui h vo sabse pahele chahiye
             .populate({ path: 'author', select: 'username profilePicture' })
             .populate({
                 path: 'comments',
                 sort: { createdAt: -1 },
-                populate: {
+                populate: { // ab ye comment ke ander author dikhe so we do this, we need profile picture and username
                     path: 'author',
                     select: 'username profilePicture'
                 }
@@ -67,10 +67,10 @@ export const getAllPost = async (req, res) => {
         console.log(error);
     }
 };
-export const getUserPost = async (req, res) => {
+export const getUserPost = async (req, res) => { //we want to get all the user posts in our profile bs profile me  but ab aapko lagega ki uppar wala aur ye wala same case h , uppar wale case me hum feed me kr rahe the toh waha sari post dikhengi
     try {
         const authorId = req.id;
-        const posts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({
+        const posts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({ //sirf isi user ki post cahhiye so find kro authorId
             path: 'author',
             select: 'username, profilePicture'
         }).populate({
@@ -89,15 +89,15 @@ export const getUserPost = async (req, res) => {
         console.log(error);
     }
 }
-export const likePost = async (req, res) => {
+export const likePost = async (req, res) => { //now this is used to like the post
     try {
-        const likeKrneWalaUserKiId = req.id;
+        const likeKrneWalaUserKiId = req.id;//so jo login karega oski id
         const postId = req.params.id; 
         const post = await Post.findById(postId);
         if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
         // like logic started
-        await post.updateOne({ $addToSet: { likes: likeKrneWalaUserKiId } });
+        await post.updateOne({ $addToSet: { likes: likeKrneWalaUserKiId } }); //so hum do bari bhi like karega toh bhi ek bari hi like hogi
         await post.save();
 
         // implement socket io for real time notification
@@ -130,7 +130,7 @@ export const dislikePost = async (req, res) => {
         if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
         // like logic started
-        await post.updateOne({ $pull: { likes: likeKrneWalaUserKiId } });
+        await post.updateOne({ $pull: { likes: likeKrneWalaUserKiId } }); //yaha push ki jagha pull krlo as ki vo dislike ke time user pull ho jaye
         await post.save();
 
         // implement socket io for real time notification
@@ -158,7 +158,7 @@ export const dislikePost = async (req, res) => {
 }
 export const addComment = async (req,res) =>{
     try {
-        const postId = req.params.id;
+        const postId = req.params.id; //so we get the post ki Id
         const commentKrneWalaUserKiId = req.id;
 
         const {text} = req.body;
@@ -191,11 +191,11 @@ export const addComment = async (req,res) =>{
         console.log(error);
     }
 };
-export const getCommentsOfPost = async (req,res) => {
+export const getCommentsOfPost = async (req,res) => { //har post ke according oske comments chahiye in feeds
     try {
         const postId = req.params.id;
 
-        const comments = await Comment.find({post:postId}).populate('author', 'username profilePicture');
+        const comments = await Comment.find({post:postId}).populate('author', 'username profilePicture'); 
 
         if(!comments) return res.status(404).json({message:'No comments found for this post', success:false});
 
@@ -236,7 +236,7 @@ export const deletePost = async (req,res) => {
         console.log(error);
     }
 }
-export const bookmarkPost = async (req,res) => {
+export const bookmarkPost = async (req,res) => { //konsi post ko bookmark krna aur konsa user h
     try {
         const postId = req.params.id;
         const authorId = req.id;
