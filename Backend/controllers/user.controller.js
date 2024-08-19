@@ -192,17 +192,17 @@ export const followOrUnfollow = async (req, res) => {
             });
         }
         //now mai check krunga ki follow krna hai ya unfollow
-        const isFollowing = user.following.includes(jiskoFollowKrunga);
-        if (isFollowing) {
+        const isFollowing = user.following.includes(jiskoFollowKrunga); 
+        if (isFollowing) {//matlab mene already follow kiya hua htoh yaha unfollow logic ayega
             // unfollow logic ayega
-            await Promise.all([
+            await Promise.all([ // jab bhi ek time pr do do documents ko handle krte h toh hum promis.all  ko use krte h.
                 User.updateOne({ _id: followKrneWala }, { $pull: { following: jiskoFollowKrunga } }),
                 User.updateOne({ _id: jiskoFollowKrunga }, { $pull: { followers: followKrneWala } }),
             ])
             return res.status(200).json({ message: 'Unfollowed successfully', success: true });
         } else {
             // follow logic ayega
-            await Promise.all([
+            await Promise.all([ // jab bhi ek time pr do do documents ko handle krte h toh hum promis.all  ko use krte h.
                 User.updateOne({ _id: followKrneWala }, { $push: { following: jiskoFollowKrunga } }),
                 User.updateOne({ _id: jiskoFollowKrunga }, { $push: { followers: followKrneWala } }),
             ])

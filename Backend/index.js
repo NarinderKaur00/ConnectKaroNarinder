@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from './utils/db.js'; //here add .js at last of file
+import userRoute from "./routes/user.route.js";
+
 dotenv.config({});
 
 const app = express();
@@ -25,7 +27,9 @@ const corsOption ={
 }
 app.use(cors(corsOption));
 
-
+// yaha pr apni API's ayenge
+app.use("/api/v1/user",userRoute); //ye common rahega "/api/v1/user" then aage register login logout ese aata rahega
+"http://localhost:8000/api/v1/user/register"
 
 
 app.listen(PORT,()=>{  //listen karenge oske baad connect karenge
