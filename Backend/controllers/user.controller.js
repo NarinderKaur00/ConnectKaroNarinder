@@ -132,7 +132,7 @@ export const editProfile = async (req, res) => { //sirf apni profile ko hi edit 
             cloudResponse = await cloudinary.uploader.upload(fileUri);
         }
 
-        const user = await User.findById(userId).select('-password');
+        const user = await User.findById(userId).select('-password');//user ha bhi ke nahi
         if (!user) {
             return res.status(404).json({
                 message: 'User not found.',
@@ -155,10 +155,10 @@ export const editProfile = async (req, res) => { //sirf apni profile ko hi edit 
         console.log(error);
     }
 };
-export const getSuggestedUsers = async (req, res) => {
+export const getSuggestedUsers = async (req, res) => { //to have some suggested users, like followers ke followers suggestions me ya koi bhi algorithm hoti h but here we don't use any algorithm
     try {
-        const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select("-password");
-        if (!suggestedUsers) {
+        const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select("-password");//vo sare users dedo jiski id not equal to any , aur bs password nahi cahhiye baki sab dedo
+        if (!suggestedUsers) {// aur agar suggested user nahi h toh ye msg show krdo
             return res.status(400).json({
                 message: 'Currently do not have any users',
             })
@@ -173,9 +173,9 @@ export const getSuggestedUsers = async (req, res) => {
 };
 export const followOrUnfollow = async (req, res) => {
     try {
-        const followKrneWala = req.id; // patel
-        const jiskoFollowKrunga = req.params.id; // shivani
-        if (followKrneWala === jiskoFollowKrunga) {
+        const followKrneWala = req.id; // shubh (meri id)
+        const jiskoFollowKrunga = req.params.id; // shivani (jisko follow karunga)
+        if (followKrneWala === jiskoFollowKrunga) {//agar khud ki hi ho
             return res.status(400).json({
                 message: 'You cannot follow/unfollow yourself',
                 success: false
@@ -191,7 +191,7 @@ export const followOrUnfollow = async (req, res) => {
                 success: false
             });
         }
-        // mai check krunga ki follow krna hai ya unfollow
+        //now mai check krunga ki follow krna hai ya unfollow
         const isFollowing = user.following.includes(jiskoFollowKrunga);
         if (isFollowing) {
             // unfollow logic ayega
