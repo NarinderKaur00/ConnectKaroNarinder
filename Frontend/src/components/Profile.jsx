@@ -59,7 +59,12 @@ const Profile = () => {
               </div>
               <div className='flex items-center gap-4'>
                 <p><span className='font-semibold'>{userProfile?.posts.length} </span>posts</p>
-                <p><span className='font-semibold'>{userProfile?.followers.length} </span>followers</p>
+                <p>
+                    <span className='font-semibold'>
+                      {userProfile?.followers?.length ?? 0} 
+                    </span>
+                    followers
+                </p>
                 <p><span className='font-semibold'>{userProfile?.following.length} </span>following</p>
               </div>
               <div className='flex flex-col gap-1'>
