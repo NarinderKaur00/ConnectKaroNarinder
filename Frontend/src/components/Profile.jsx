@@ -71,8 +71,6 @@ const Profile = () => {
                 <span className='font-semibold'>{userProfile?.bio || 'bio here...'}</span>
                 <Badge className='w-fit' variant='secondary'><AtSign /> <span className='pl-1'>{userProfile?.username}</span> </Badge>
                 <span>Made By Shubhkarman Singh</span>
-                {/* <span>🤯Turing code into fun</span>
-                <span>🤯DM for collaboration</span> */}
               </div>
             </div>
           </section>
