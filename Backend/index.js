@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(cookieParser());// this is used when we make a request from browser in backend then the token is stored in cookies only, if not used then it will not go to backend
 app.use(urlencoded({ extended: true }));
 const corsOptions = {
-    origin: 'http://localhost:5173', //we use react white, oska port number hota h
+    origin: process.env.URL,
     credentials: true
 }
 app.use(cors(corsOptions));
