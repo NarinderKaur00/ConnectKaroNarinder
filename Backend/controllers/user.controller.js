@@ -1,12 +1,13 @@
-import { User } from "../models/user.model.js";
+import { User } from "../models/user.model.js"; //we put model.js and if we don't put .js then error will come
 import bcrypt from "bcryptjs"; // for hashed password
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
-export const register = async (req, res) => {
+export const register = async (req, res) => { // code for register the user
     try {
         const { username, email, password } = req.body; // these are required to submit the form and we want these three together so we use req.body
+        // and if we want them single single then we use req.body.username 
         if (!username || !email || !password) {
             return res.status(401).json({ //data me response bhejna h
                 message: "Something is missing, please check!",
@@ -20,7 +21,7 @@ export const register = async (req, res) => {
                 success: false,
             });
         };
-        const hashedPassword = await bcrypt.hash(password, 10); // here the password, should be safe so we did hashed password and 10 defines ki password ko kitna hashed krna h kitna khatarnak hashed krna h
+        const hashedPassword = await bcrypt.hash(password, 10); // here the password, should be safe so we did hashed password and 10 defines ki password ko kitna hashed krna h kitna khatarnak hashed krna h, and this 10 is called as salt value
 
         await User.create({ //agar user already nahi h so we do register
             username, // yaha pr vo chez dalo jo jo required hota h
@@ -36,7 +37,7 @@ export const register = async (req, res) => {
         console.log(error);
     }
 }
-export const login = async (req, res) => {
+export const login = async (req, res) => { // code to login a user
     try {
         const { email, password } = req.body; // login krte time kya kya chahiye
         if (!email || !password) { // agar missing toh return 
@@ -65,7 +66,7 @@ export const login = async (req, res) => {
 // in browser go to inspect them application then cookies
         //ab jab sab ho chuka so create a token and is stored in cookies 
         // so what is token is ki agar toh cookie me token hota h toh means k iuser site pr h login h aur agar token nahi hota cookies me toh iska matlab user ne logout kr diya ab vo site pr nahi h
-        const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' }); // 1d means 24 hours
+        const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' }); // 1d means 24 hours, so after 1 day it gets expire
 
         // populate each post if in the posts array
         const populatedPosts = await Promise.all(
@@ -99,7 +100,7 @@ export const login = async (req, res) => {
 };
 export const logout = async (_, res) => {
     try {
-        return res.cookie("token", "", { maxAge: 0 }).json({ // cookie ke ander ka token delete krdo
+        return res.cookie("token", "", { maxAge: 0 }).json({ // cookie ke ander ka token delete krdo, empty string krdo iska matlab false hota h
             message: 'Logged out successfully.',
             success: true
         });
